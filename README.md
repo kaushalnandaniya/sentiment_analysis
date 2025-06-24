@@ -1,112 +1,111 @@
 # Sentimental: Twitter Sentiment Analysis
 
-A powerful sentiment analysis tool using fine-tuned BERT model trained on the Sentiment140 dataset.
+A lightweight sentiment analysis tool using advanced AI models, deployed on Streamlit Cloud.
 
 ## 🚀 Live Demo
 
-[Deploy your own version](#deployment)
+[View the live app](https://sentimentanalysis0kaushal.streamlit.app)
 
 ## 📊 Features
 
-- **BERT-based Model**: Fine-tuned DistilBERT for optimal performance
-- **High Accuracy**: Trained on 1.6M+ tweets
-- **Real-time Analysis**: Instant sentiment predictions
-- **Confidence Scores**: See how confident the model is
-- **Beautiful UI**: Modern Streamlit interface
+- **AI-Powered Analysis**: Uses Twitter-RoBERTa model for accurate sentiment detection
+- **Real-time Processing**: Instant sentiment predictions with confidence scores
+- **Beautiful UI**: Modern Streamlit interface with emojis and progress bars
+- **Example Tweets**: Try pre-loaded examples to test the model
+- **Mobile Friendly**: Works great on all devices
 
-## 🛠️ Installation
+## 🛠️ Quick Start
 
-1. Clone the repository:
+### Run Locally
+
+1. **Clone the repository:**
 ```bash
-git clone <your-repo-url>
-cd sentimental
+git clone https://github.com/kaushalnandaniya/sentiment_analysis.git
+cd sentiment_analysis
 ```
 
-2. Install dependencies:
+2. **Install dependencies:**
 ```bash
 pip install -r requirements.txt
 ```
 
-3. Run locally:
+3. **Run the app:**
 ```bash
-streamlit run app.py
+streamlit run src/app.py
 ```
+
+4. **Open your browser** and go to `http://localhost:8501`
 
 ## 📁 Project Structure
 
 ```
-sentimental/
-├── app.py                 # Main Streamlit application
-├── src/                   # Source code
-│   ├── data_loader.py     # Data loading utilities
-│   ├── preprocessing.py   # Text preprocessing
-│   ├── train_bert.py      # BERT training script
-│   ├── predict_bert.py    # Prediction utilities
-│   └── app.py            # Local Streamlit app
-├── data/                  # Data and models
-│   ├── bert_sentiment_model/  # Trained BERT model
-│   └── cleaned_sentiment140.csv
-├── notebooks/             # Jupyter notebooks
-└── requirements.txt       # Python dependencies
+sentiment_analysis/
+├── src/
+│   └── app.py            # Main Streamlit application
+├── requirements.txt       # Python dependencies
+├── README.md             # Project documentation
+├── .gitignore            # Git ignore rules
+└── LICENSE               # Apache 2.0 license
 ```
 
 ## 🚀 Deployment
 
 ### Streamlit Cloud (Recommended)
 
-1. **Push to GitHub**:
-```bash
-git add .
-git commit -m "Ready for deployment"
-git push origin main
-```
+1. **Fork this repository** or create your own
+2. **Go to [share.streamlit.io](https://share.streamlit.io)**
+3. **Connect your GitHub repository**
+4. **Set main file path to `src/app.py`**
+5. **Click "Deploy"**
 
-2. **Deploy on Streamlit Cloud**:
-   - Go to [share.streamlit.io]https://share.streamlit.io)
-   - Connect your GitHub repository
-   - Set main file path to `app.py`
-   - Click "Deploy"
+### Alternative Platforms
 
-### Hugging Face Spaces
+- **Hugging Face Spaces**: Upload to HF Spaces for free hosting
+- **Heroku**: Use the Procfile for Heroku deployment
+- **Railway**: Connect GitHub repo for automatic deployment
 
-1. Create a new Space on [Hugging Face](https://huggingface.co/spaces)
-2. Upload your code and model
-3. Deploy automatically
+## 🔧 How It Works
 
-### Local Network
+1. **Text Input**: Users enter tweets or text in the text area
+2. **AI Processing**: The Twitter-RoBERTa model analyzes the sentiment
+3. **Results Display**: Shows sentiment (positive/negative/neutral) with confidence
+4. **Visual Feedback**: Progress bars and emojis for better UX
 
-Run on your local network for team access:
-```bash
-streamlit run app.py --server.address 0.0.0.0 --server.port 8501
-```
+## 📈 Model Details
 
-## 📈 Model Performance
+- **Model**: `cardiffnlp/twitter-roberta-base-sentiment-latest`
+- **Training**: Fine-tuned on Twitter data
+- **Accuracy**: High performance on social media text
+- **Languages**: English (optimized for Twitter-style text)
 
-- **Dataset**: Sentiment140 (1.6M tweets)
-- **Architecture**: DistilBERT
-- **Accuracy**: ~80% on validation set
-- **Training Time**: ~30 minutes on GPU
+## 🎯 Use Cases
 
-## 🔧 Customization
+- **Social Media Monitoring**: Analyze customer sentiment on Twitter
+- **Product Reviews**: Understand customer feedback
+- **Market Research**: Track brand sentiment over time
+- **Content Analysis**: Evaluate the tone of written content
 
-### Train Your Own Model
-
-1. Prepare your dataset in the same format as Sentiment140
-2. Run the training script:
-```bash
-python src/train_bert.py
-```
+## 🛠️ Customization
 
 ### Modify the App
 
-Edit `app.py` to:
+Edit `src/app.py` to:
 - Change the UI design
-- Add new features
-- Integrate with other services
+- Add new features (batch processing, file upload)
+- Integrate with databases or APIs
+- Add more example tweets
+
+### Use Different Models
+
+Replace the model in `src/app.py`:
+```python
+# For different sentiment models
+classifier = pipeline("sentiment-analysis", model="your-model-name")
+```
 
 ## 📝 License
 
-MIT License - feel free to use this project for your own applications!
+Apache 2.0 License - feel free to use this project for your own applications!
 
 ## 🤝 Contributing
 
@@ -114,6 +113,13 @@ MIT License - feel free to use this project for your own applications!
 2. Create a feature branch
 3. Make your changes
 4. Submit a pull request
+
+## 📞 Support
+
+If you encounter any issues:
+1. Check the [Streamlit Cloud logs](https://share.streamlit.io)
+2. Verify your `requirements.txt` is up to date
+3. Test locally before deploying
 
 ---
 
