@@ -121,6 +121,4 @@ If you encounter any issues:
 2. Verify your `requirements.txt` is up to date
 3. Test locally before deploying
 
----
 
-Built with ❤️ using Streamlit and Hugging Face Transformers 
