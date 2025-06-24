@@ -1,46 +1,113 @@
-import os
 import streamlit as st
-import torch
-from transformers import DistilBertTokenizerFast, DistilBertForSequenceClassification
+from transformers import pipeline
+import time
 
+# Load the sentiment analysis pipeline
 @st.cache_resource
-def load_model(model_dir):
-    tokenizer = DistilBertTokenizerFast.from_pretrained(model_dir)
-    model = DistilBertForSequenceClassification.from_pretrained(model_dir)
-    model.eval()
-    return tokenizer, model
+def load_model():
+    return pipeline("sentiment-analysis", model="cardiffnlp/twitter-roberta-base-sentiment-latest")
 
-def predict_sentiment(text, tokenizer, model):
-    inputs = tokenizer(text, return_tensors="pt", truncation=True, padding=True, max_length=64)
-    with torch.no_grad():
-        outputs = model(**inputs)
-        probs = torch.softmax(outputs.logits, dim=1)
-        pred = torch.argmax(probs, dim=1).item()
-        confidence = probs[0, pred].item()
-    sentiment = "positive" if pred == 1 else "negative"
-    return sentiment, confidence
+def predict_sentiment(text, classifier):
+    result = classifier(text)[0]
+    return result['label'], result['score']
 
-st.title("Twitter Sentiment Analysis (BERT)")
-st.write("Enter a tweet below to predict its sentiment using your fine-tuned BERT model.")
+# Page configuration
+st.set_page_config(
+    page_title="Twitter Sentiment Analysis",
+    page_icon="🐦",
+    layout="wide"
+)
 
-model_dir = os.path.join(os.path.dirname(__file__), '..', 'data', 'bert_sentiment_model')
-tokenizer, model = load_model(model_dir)
+# Main app
+st.title("🐦 Twitter Sentiment Analysis")
+st.markdown("Analyze the sentiment of tweets and text using AI!")
 
-user_input = st.text_area("Tweet text", "I love this product! It's amazing.")
+# Load model
+with st.spinner("Loading AI model..."):
+    classifier = load_model()
 
-if st.button("Predict Sentiment"):
-    sentiment, confidence = predict_sentiment(user_input, tokenizer, model)
-    st.markdown(f"**Predicted sentiment:** {sentiment}")
-    st.markdown(f"**Confidence:** {confidence:.2f}")
+# Sidebar
+st.sidebar.header("📊 About")
+st.sidebar.markdown("""
+This app uses a **Twitter-RoBERTa** model fine-tuned for sentiment analysis on social media text.
 
+**Features:**
+- 🎯 High accuracy on Twitter-style text
+- ⚡ Real-time predictions
+- 📱 Mobile-friendly interface
+- 🎨 Beautiful UI with emojis
+""")
+
+# Main content
+col1, col2 = st.columns([2, 1])
+
+with col1:
+    st.subheader("📝 Enter Your Text")
+    
+    # Example tweets
+    example_tweets = [
+        "I love this new phone! The camera is amazing! 📱",
+        "This restaurant was terrible. Worst food ever! 😤",
+        "Just had the best coffee of my life! ☕",
+        "The movie was okay, nothing special.",
+        "Customer service was absolutely horrible! 😡"
+    ]
+    
+    # Text input
+    user_input = st.text_area(
+        "Enter your tweet or text here:",
+        value=example_tweets[0],
+        height=120,
+        placeholder="Type your text here..."
+    )
+    
+    # Predict button
+    if st.button("🔍 Analyze Sentiment", type="primary", use_container_width=True):
+        if user_input.strip():
+            with st.spinner("Analyzing..."):
+                # Add a small delay for better UX
+                time.sleep(0.5)
+                
+                sentiment, confidence = predict_sentiment(user_input, classifier)
+                
+                # Display results
+                st.success("Analysis Complete!")
+                
+                # Color-coded sentiment display
+                if sentiment == "POSITIVE":
+                    st.markdown(f"### 😊 **Positive** ({confidence:.1%})")
+                    st.progress(confidence)
+                elif sentiment == "NEGATIVE":
+                    st.markdown(f"### 😞 **Negative** ({confidence:.1%})")
+                    st.progress(confidence)
+                else:
+                    st.markdown(f"### 😐 **Neutral** ({confidence:.1%})")
+                    st.progress(confidence)
+                
+                # Confidence explanation
+                if confidence > 0.8:
+                    st.info("🎯 High confidence prediction")
+                elif confidence > 0.6:
+                    st.warning("⚠️ Medium confidence prediction")
+                else:
+                    st.warning("🤔 Low confidence prediction")
+        else:
+            st.error("Please enter some text to analyze!")
+
+with col2:
+    st.subheader("🎯 Try Examples")
+    st.markdown("Click any example to test the model:")
+    
+    for i, tweet in enumerate(example_tweets):
+        if st.button(f"Example {i+1}", key=f"example_{i}"):
+            st.session_state.example_text = tweet
+            st.rerun()
+
+# Footer
 st.markdown("---")
-st.markdown(
-    """
-**How to run this app:**
-
-```bash
-cd src
-streamlit run app.py
-```
-"""
-) 
+st.markdown("""
+<div style='text-align: center; color: #666;'>
+    <p>Built with ❤️ using Streamlit and Hugging Face Transformers</p>
+    <p>Model: <code>cardiffnlp/twitter-roberta-base-sentiment-latest</code></p>
+</div>
+""", unsafe_allow_html=True) 
